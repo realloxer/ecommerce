@@ -21,11 +21,13 @@ import java.util.UUID;
 public class OrderWebController {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final RefundRecordRepository refundRecordRepository;
 
     public OrderWebController(OrderRepository orderRepository, ProductRepository productRepository,
             RefundRecordRepository refundRecordRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.refundRecordRepository = refundRecordRepository;
     }
 
     @GetMapping
@@ -33,5 +35,16 @@ public class OrderWebController {
         List<Order> orders = orderRepository.findAll();
         model.addAttribute("orders", orders);
         return "orders";
+    }
+
+    @GetMapping("/{id}")
+    public String orderDetails(@PathVariable UUID id, Model model) {
+        return orderRepository.findById(id)
+                .map(order -> {
+                    model.addAttribute("order", order);
+                    model.addAttribute("refunds", refundRecordRepository.findByOrderId(order.getId()));
+                    return "order-details";
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + id));
     }
 }
