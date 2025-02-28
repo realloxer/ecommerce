@@ -2,15 +2,24 @@ package com.example.myapp.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
+@DynamicUpdate
 @Table(name = "orders")
 public class Order {
     @Id
@@ -27,4 +36,11 @@ public class Order {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Payment payment;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<OrderItem> items = new HashSet<>();
 }
