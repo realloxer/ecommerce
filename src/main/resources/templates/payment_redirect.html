@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting...</title>
+    <script type="text/javascript">
+        window.onload = function() {
+            const responseStatus = '[[${responseStatus}]]';
+            console.log("Received responseStatus:", responseStatus);
+            if (responseStatus === "A") {
+                // Redirect to payment success page
+                window.top.location.href = "/payment/success";
+            } else {
+                // Redirect to payment failure page
+                window.top.location.href = "/payment/failure";
+            }
+        };
+    </script>
+</head>
+<body>
+    <p>Please wait while we process your payment...</p>
+</body>
+</html>

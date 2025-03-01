@@ -68,6 +68,23 @@ public class PaymentController {
         }
     }
 
+    @RequestMapping("/redirect")
+    public String paymentReturn(@RequestParam Map<String, String> callbackParams, Model model) {
+        // Pass the payment response status from PayTabs to the view for conditional redirection
+        model.addAttribute("responseStatus", callbackParams.get("respStatus"));
+        return "payment_redirect";
+    }
+
+    @RequestMapping("/success")
+    public String paymentSuccess() {
+        return "payment_success";
+    }
+
+    @RequestMapping("/failure")
+    public String paymentCancel() {
+        return "payment_failure";
+    }
+
     private JSONObject createPaymentRequestBody(String orderId, String amount, String name, String email,
             String address) {
         JSONObject body = new JSONObject();
@@ -82,16 +99,16 @@ public class PaymentController {
         body.put("framed", true);
         // Return Url does not work with localhost http server, need a deployed server
         // with https
-        body.put("return", "https://5d43-116-109-30-201.ngrok-free.app/payment/return");
+        body.put("return", "https://5d43-116-109-30-201.ngrok-free.app/payment/redirect");
 
         // Set customer details ta avoid re-entering billing details
         JSONObject customerDetails = new JSONObject();
         customerDetails.put("name", name);
         customerDetails.put("email", email);
         customerDetails.put("street1", address);
-        customerDetails.put("city", "cairo");
-        customerDetails.put("state", "mamluk");
-        customerDetails.put("country", "Egypt");
+        customerDetails.put("city", "dubai");
+        customerDetails.put("state", "du");
+        customerDetails.put("country", "AE");
         customerDetails.put("zip", "12345");
         body.put("customer_details", customerDetails);
 

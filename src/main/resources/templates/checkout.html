@@ -11,6 +11,13 @@
             var email = $("#email").val();
             var address = $("#address").val();
             var orderId = $("#orderId").val();
+            var shippingMethod = $("input[name='shippingMethod']:checked").val();
+
+            // Input validation
+            if (!name.trim() || !email.trim() || !address.trim() || !shippingMethod) {
+                alert("Please fill in all required fields and select a shipping method.");
+                return;
+            }
 
             $("#loading").show();
 
@@ -28,13 +35,13 @@
                     var iframe = $('<iframe>', {
                         src: response,
                         width: '100%',
-                        height: '550px',
+                        height: '450px',
                         frameborder: '0'
                     });
 
                     iframe.on('load', function () {
                         $("#loading").hide();
-                        $("#payment-title").show(); // Show the Payment title after iframe loads
+                        $("#payment-title").show(); // Show Payment title after iframe loads
                     });
 
                     $('#payment-iframe-container').html(iframe);
