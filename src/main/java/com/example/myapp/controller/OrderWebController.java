@@ -1,27 +1,16 @@
 package com.example.myapp.controller;
 
-import com.example.myapp.entity.Order;
-import com.example.myapp.entity.OrderItem;
-import com.example.myapp.entity.OrderStatus;
-import com.example.myapp.entity.Product;
-import com.example.myapp.entity.ShippingMethod;
+import com.example.myapp.entity.*;
 import com.example.myapp.repository.OrderRepository;
 import com.example.myapp.repository.ProductRepository;
 import com.example.myapp.repository.RefundRecordRepository;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
@@ -45,8 +34,8 @@ public class OrderWebController {
         return "orders";
     }
 
-    @GetMapping("/checkout")
-    public String showCheckoutPage(@RequestParam Map<String, String> params, Model model) {
+    @GetMapping("/create")
+    public String showCreateOrderPage(@RequestParam Map<String, String> params, Model model) {
         List<OrderItem> items = new ArrayList<>();
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -64,28 +53,18 @@ public class OrderWebController {
 
         model.addAttribute("items", items);
         model.addAttribute("shippingMethods", ShippingMethod.values());
-        return "checkout";
+        return "create_order";
     }
 
-    @PostMapping("/checkout")
+    @PostMapping("/create")
     @Transactional
-    public String processCheckout(
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam String address,
-            @RequestParam ShippingMethod shippingMethod,
-            @RequestParam Map<String, String> parameters) {
+    public String processCreateOrder(@RequestParam Map<String, String> parameters) {
         Order order = new Order();
         order.setStatus(OrderStatus.PENDING);
-        order.setShippingMethod(shippingMethod);
-        order.setName(name);
-        order.setEmail(email);
-        order.setAddress(address);
 
         AtomicReference<BigDecimal> totalAmount = new AtomicReference<>(BigDecimal.ZERO);
         Set<OrderItem> items = new HashSet<>();
 
-        // Filter out non-UUID parameters (e.g., name, email, address ...)
         parameters.entrySet().stream()
                 .filter(entry -> entry.getKey().matches("^[0-9a-fA-F-]{36}$")) // Match valid UUID format
                 .forEach(entry -> {
@@ -102,12 +81,12 @@ public class OrderWebController {
                         totalAmount.updateAndGet(current -> current.add(item.getPrice()));
                     });
                 });
-                
+
         order.setItems(items);
         order.setTotalAmount(totalAmount.get());
         orderRepository.save(order);
 
-        return "redirect:/orders/" + order.getId();
+        return "redirect:/orders/checkout/" + order.getId();
     }
 
     @GetMapping("/{id}")
@@ -119,5 +98,14 @@ public class OrderWebController {
                     return "order-details";
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + id));
+    }
+
+    @GetMapping("/checkout/{orderId}")
+    public String showCheckoutPage(@PathVariable UUID orderId, Model model) {
+        return orderRepository.findById(orderId).map(order -> {
+            model.addAttribute("order", order);
+            model.addAttribute("shippingMethods", ShippingMethod.values());
+            return "checkout";
+        }).orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
     }
 }

@@ -9,43 +9,59 @@
             document.getElementById('hidden-' + productId).value = input.value;
         }
     </script>
+    <style>
+        .table-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
     <h1>Product List</h1>
 
-    <form action="/orders/checkout" method="get">
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="product : ${products}">
-                    <td th:text="${product.name}"></td>
-                    <td th:text="${product.description}"></td>
-                    <td th:text="${product.price}"></td>
-                    <td>
-                        <!-- Hidden input to store product ID and quantity -->
-                        <input type="hidden" th:id="'hidden-' + ${product.id}" th:name="${product.id}" value="1" />
+    <form action="/orders/create" method="get">
+        <div class="table-container">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${products}">
+                        <td th:text="${product.name}"></td>
+                        <td th:text="${product.description}"></td>
+                        <td th:text="${product.price}"></td>
+                        <td>
+                            <!-- Hidden input to store product ID and quantity -->
+                            <input type="hidden" th:id="'hidden-' + ${product.id}" th:name="${product.id}" value="1" />
 
-                        <!-- Quantity input with safe data-product-id -->
-                        <label>Quantity:
-                            <input type="number" value="1" min="1"
-                                th:attr="data-product-id=${product.id}" onchange="updateQuantity(this)" />
-                        </label>
-                    </td>
-                    <td>
-                        <button type="submit">Checkout</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                            <!-- Quantity input with safe data-product-id -->
+                            <label>Quantity:
+                                <input type="number" value="1" min="1" th:attr="data-product-id=${product.id}"
+                                    onchange="updateQuantity(this)" />
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Centered Create Order Button -->
+            <div class="button-container">
+                <button type="submit">Create Order</button>
+            </div>
+        </div>
     </form>
 
     <a href="/">Back to Home</a>
