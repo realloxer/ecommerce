@@ -12,7 +12,7 @@
             var address = $("#address").val();
             var orderId = $("#orderId").val();
             var shippingMethod = $("input[name='shippingMethod']:checked").val();
-
+            console.log(shippingMethod)
             // Input validation
             if (!name.trim() || !email.trim() || !address.trim() || !shippingMethod) {
                 alert("Please fill in all required fields and select a shipping method.");
@@ -25,11 +25,12 @@
                 url: '/payment/initiatePayment',
                 type: 'GET',
                 data: {
+                    orderId: orderId,
+                    shippingMethod: shippingMethod,
                     amount: amount,
                     name: name,
                     email: email,
-                    address: address,
-                    orderId: orderId
+                    address: address
                 },
                 success: function (response) {
                     var iframe = $('<iframe>', {

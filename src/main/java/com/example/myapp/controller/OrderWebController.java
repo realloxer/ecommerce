@@ -108,24 +108,4 @@ public class OrderWebController {
             return "checkout";
         }).orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
     }
-
-    @PostMapping("/checkout")
-    @Transactional
-    public String processCheckout(
-            @RequestParam UUID orderId,
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam String address,
-            @RequestParam ShippingMethod shippingMethod) {
-
-        return orderRepository.findById(orderId).map(order -> {
-            order.setName(name);
-            order.setEmail(email);
-            order.setAddress(address);
-            order.setShippingMethod(shippingMethod);
-            orderRepository.save(order);
-
-            return "redirect:/orders/" + orderId;
-        }).orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
-    }
 }
