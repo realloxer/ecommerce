@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Checkout</title>
+    <title>Create Order</title>
 </head>
 
 <body>
-    <h1>Checkout</h1>
+    <h1>Create Order</h1>
 
     <h2>Order Summary</h2>
     <table border="1">
@@ -27,7 +27,7 @@
     </table>
 
     <h2>Shipping Information</h2>
-    <form action="/orders/checkout" method="post">
+    <form action="/orders/create" method="post">
         <input type="hidden" th:each="item : ${items}" th:name="${item.product.id}" th:value="${item.quantity}" />
 
         <table>

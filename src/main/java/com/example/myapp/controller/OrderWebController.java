@@ -45,8 +45,8 @@ public class OrderWebController {
         return "orders";
     }
 
-    @GetMapping("/checkout")
-    public String showCheckoutPage(@RequestParam Map<String, String> params, Model model) {
+    @GetMapping("/create") 
+    public String showCreateOrderPage(@RequestParam Map<String, String> params, Model model) {
         List<OrderItem> items = new ArrayList<>();
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -64,12 +64,12 @@ public class OrderWebController {
 
         model.addAttribute("items", items);
         model.addAttribute("shippingMethods", ShippingMethod.values());
-        return "checkout";
+        return "create_order";
     }
 
-    @PostMapping("/checkout")
+    @PostMapping("/create")
     @Transactional
-    public String processCheckout(
+    public String processCreateOrder(
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam String address,
