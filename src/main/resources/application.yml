@@ -19,4 +19,8 @@ spring:
       ddl-auto: update
     show-sql: true
 
-    
+paytabs:
+  profile_id: 132344
+  integration_key: SWJ992BZTN-JHGTJBWDLM-BZJKMR2ZHT
+  instance: Egypt
+  api_url: "https://secure-egypt.paytabs.com/payment/request"

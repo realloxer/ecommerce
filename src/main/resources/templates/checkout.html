@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Checkout</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function initiatePayment() {
+            var amount = $("#amount").val();
+            var name = $("#name").val();
+            var email = $("#email").val();
+            var address = $("#address").val();
+            var orderId = $("#orderId").val();
+
+            $("#loading").show();
+
+            $.ajax({
+                url: '/payment/initiatePayment',
+                type: 'GET',
+                data: {
+                    amount: amount,
+                    name: name,
+                    email: email,
+                    address: address,
+                    orderId: orderId
+                },
+                success: function (response) {
+                    var iframe = $('<iframe>', {
+                        src: response,
+                        width: '100%',
+                        height: '550px',
+                        frameborder: '0'
+                    });
+
+                    iframe.on('load', function () {
+                        $("#loading").hide();
+                        $("#payment-title").show(); // Show the Payment title after iframe loads
+                    });
+
+                    $('#payment-iframe-container').html(iframe);
+                },
+                error: function (xhr, status, error) {
+                    $("#loading").hide();
+                    var errorMessage = 'Error.';
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        errorMessage = response.error || errorMessage;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    alert(errorMessage);
+                }
+            });
+        }
+    </script>
+
+    <style>
+        #container {
+            display: flex;
+            justify-content: flex-start;
+            /* Aligns both sections closer to the left */
+            gap: 40px;
+            /* Reduce gap between sections */
+        }
+
+        #order-details {
+            margin-right: 30px;
+        }
+
+        #payment-section {
+            width: 40%;
+        }
+
+        #payment-iframe-container {
+            margin-top: 20px;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #pay-now-btn {
+            margin: 20px 0;
+            /* Add margin to the button */
+        }
+
+        #payment-title {
+            display: none;
+            /* Hide Payment title initially */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Checkout</h1>
+
+    <div id="container">
+        <!-- Order Details and Shipping Information (Left Side) -->
+        <div id="order-details">
+            <h2>Order Summary</h2>
+            <p th:text="'Order ID: ' + ${order.id}"></p>
+            <p th:text="'Total: ' + ${order.totalAmount} + ' EGP'"></p>
+
+            <h2>Shipping Information</h2>
+            <form id="payment-form">
+                <input type="hidden" id="amount" name="amount" th:value="${order.totalAmount}" />
+                <input type="hidden" id="orderId" name="orderId" th:value="${order.id}" />
+
+                <table>
+                    <tr>
+                        <td><label for="name">Name:</label></td>
+                        <td><input type="text" id="name" name="name" th:value="${order.name}" required /></td>
+                    </tr>
+
+                    <tr>
+                        <td><label for="email">Email:</label></td>
+                        <td><input type="email" id="email" name="email" th:value="${order.email}" required /></td>
+                    </tr>
+
+                    <tr>
+                        <td><label for="address">Address:</label></td>
+                        <td><textarea id="address" name="address" rows="3" required
+                                th:text="${order.address}"></textarea></td>
+                    </tr>
+                </table>
+
+                <h3>Shipping Method</h3>
+                <div th:each="method : ${shippingMethods}">
+                    <label>
+                        <input type="radio" name="shippingMethod" th:value="${method}"
+                            th:checked="${order.shippingMethod == method}" required />
+                        <span th:text="${method}"></span>
+                    </label><br />
+                </div>
+
+                <button type="button" id="pay-now-btn" onclick="initiatePayment()">Pay Now</button>
+            </form>
+        </div>
+
+        <!-- Payment Section (Closer to the Left) -->
+        <div id="payment-section">
+            <h2 id="payment-title">Payment</h2>
+
+            <div id="payment-iframe-container">
+                <div id="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="/orders" style="display:block; margin-top: 20px;">Back to Orders</a>
+</body>
+
+</html>
