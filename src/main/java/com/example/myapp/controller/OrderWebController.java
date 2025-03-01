@@ -103,6 +103,9 @@ public class OrderWebController {
     @GetMapping("/checkout/{orderId}")
     public String showCheckoutPage(@PathVariable UUID orderId, Model model) {
         return orderRepository.findById(orderId).map(order -> {
+            if (order.getStatus() == OrderStatus.COMPLETED) {
+                return "redirect:/orders/" + order.getId();
+            }
             model.addAttribute("order", order);
             model.addAttribute("shippingMethods", ShippingMethod.values());
             return "checkout";

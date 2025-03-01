@@ -67,13 +67,12 @@
     <div class="section" th:if="${order.payment != null}">
         <h2>Payment Information</h2>
         <p><strong>Payment ID:</strong> <span th:text="${order.payment.id}"></span></p>
-        <p><strong>Status:</strong> <span th:text="${order.payment.status}"></span></p>
 
-        <h3>Request Payload</h3>
-        <pre th:text="${order.payment.requestPayload}"></pre>
+        <h3>Payment Information</h3>
+        <pre th:text="${order.payment.paymentMethod}"></pre>
 
-        <h3>Response Payload</h3>
-        <pre th:text="${order.payment.responsePayload}"></pre>
+        <h3>Payment Date</h3>
+        <pre th:text="${order.payment.paymentDate}"></pre>
     </div>
 
     <div class="section" th:if="${refunds != null and not #lists.isEmpty(refunds)}">
