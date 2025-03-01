@@ -30,6 +30,10 @@ public class Order {
     private OrderStatus status;
 
     private BigDecimal totalAmount;
+    // Customer name
+    private String name;
+    private String email;
+    private String address;
 
     @Enumerated(EnumType.STRING)
     private ShippingMethod shippingMethod;

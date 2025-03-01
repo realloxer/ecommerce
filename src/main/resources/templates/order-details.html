@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Order Details</title>
     <meta charset="UTF-8" />
@@ -9,20 +10,26 @@
             line-height: 1.6;
             margin: 20px;
         }
-        h1, h2, h3 {
+
+        h1,
+        h2,
+        h3 {
             color: #333;
         }
+
         pre {
             background: #f4f4f4;
             padding: 10px;
             border-radius: 5px;
             overflow: auto;
         }
+
         .section {
             margin-bottom: 20px;
         }
     </style>
 </head>
+
 <body>
 
     <h1>Order Details</h1>
@@ -33,7 +40,15 @@
         <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
         <p><strong>Shipping Method:</strong> <span th:text="${order.shippingMethod}"></span></p>
         <p><strong>Total Amount:</strong> <span th:text="${order.totalAmount}"></span></p>
-        <p><strong>Created At:</strong> <span th:text="${#dates.format(order.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+        <p><strong>Created At:</strong> <span th:text="${#dates.format(order.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Customer Information</h2>
+        <p><strong>Name:</strong> <span th:text="${order.name ?: 'N/A'}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${order.email ?: 'N/A'}"></span></p>
+        <p><strong>Address:</strong> <span th:text="${order.address ?: 'N/A'}"></span></p>
     </div>
 
     <div class="section">
@@ -41,8 +56,8 @@
         <ul>
             <li th:each="item : ${order.items}">
                 <p>
-                    <strong>Product:</strong> <span th:text="${item.product.name}"></span> - 
-                    <strong>Quantity:</strong> <span th:text="${item.quantity}"></span> - 
+                    <strong>Product:</strong> <span th:text="${item.product.name}"></span> -
+                    <strong>Quantity:</strong> <span th:text="${item.quantity}"></span> -
                     <strong>Price:</strong> <span th:text="${item.price}"></span>
                 </p>
             </li>
@@ -84,4 +99,5 @@
     <a href="/orders">Back to Orders</a>
 
 </body>
+
 </html>

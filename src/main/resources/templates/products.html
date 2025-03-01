@@ -3,35 +3,50 @@
 
 <head>
     <title>Product List</title>
+    <script>
+        function updateQuantity(input) {
+            const productId = input.getAttribute('data-product-id');
+            document.getElementById('hidden-' + productId).value = input.value;
+        }
+    </script>
 </head>
 
 <body>
     <h1>Product List</h1>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.name}"></td>
-                <td th:text="${product.description}"></td>
-                <td th:text="${product.price}"></td>
-                <td>
-                    <form action="/orders/create" method="post">
-                        <input type="hidden" name="productId" th:value="${product.id}" />
-                        <label>Quantity: <input type="number" name="quantity" value="1" /></label>
-                        <button type="submit">Add to Order</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <form action="/orders/checkout" method="get">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.name}"></td>
+                    <td th:text="${product.description}"></td>
+                    <td th:text="${product.price}"></td>
+                    <td>
+                        <!-- Hidden input to store product ID and quantity -->
+                        <input type="hidden" th:id="'hidden-' + ${product.id}" th:name="${product.id}" value="1" />
+
+                        <!-- Quantity input with safe data-product-id -->
+                        <label>Quantity:
+                            <input type="number" value="1" min="1"
+                                th:attr="data-product-id=${product.id}" onchange="updateQuantity(this)" />
+                        </label>
+                    </td>
+                    <td>
+                        <button type="submit">Checkout</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 
     <a href="/">Back to Home</a>
 </body>
