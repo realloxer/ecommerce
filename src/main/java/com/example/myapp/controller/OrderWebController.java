@@ -69,23 +69,13 @@ public class OrderWebController {
 
     @PostMapping("/create")
     @Transactional
-    public String processCreateOrder(
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam String address,
-            @RequestParam ShippingMethod shippingMethod,
-            @RequestParam Map<String, String> parameters) {
+    public String processCreateOrder(@RequestParam Map<String, String> parameters) {
         Order order = new Order();
         order.setStatus(OrderStatus.PENDING);
-        order.setShippingMethod(shippingMethod);
-        order.setName(name);
-        order.setEmail(email);
-        order.setAddress(address);
 
         AtomicReference<BigDecimal> totalAmount = new AtomicReference<>(BigDecimal.ZERO);
         Set<OrderItem> items = new HashSet<>();
 
-        // Filter out non-UUID parameters (e.g., name, email, address ...)
         parameters.entrySet().stream()
                 .filter(entry -> entry.getKey().matches("^[0-9a-fA-F-]{36}$")) // Match valid UUID format
                 .forEach(entry -> {
@@ -102,7 +92,7 @@ public class OrderWebController {
                         totalAmount.updateAndGet(current -> current.add(item.getPrice()));
                     });
                 });
-                
+
         order.setItems(items);
         order.setTotalAmount(totalAmount.get());
         orderRepository.save(order);

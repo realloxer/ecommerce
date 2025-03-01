@@ -3,6 +3,11 @@
 
 <head>
     <title>Create Order</title>
+    <style>
+        .checkout-btn {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,39 +31,14 @@
         </tbody>
     </table>
 
-    <h2>Shipping Information</h2>
     <form action="/orders/create" method="post">
+        <h2>Confirm Order</h2>
+
+        <!-- Hidden inputs for product and quantity -->
         <input type="hidden" th:each="item : ${items}" th:name="${item.product.id}" th:value="${item.quantity}" />
 
-        <table>
-            <tr>
-                <td><label for="name">Name:</label></td>
-                <td><input type="text" id="name" name="name" required style="width: 200px;" /></td>
-            </tr>
-
-            <tr>
-                <td><label for="email">Email:</label></td>
-                <td><input type="email" id="email" name="email" required style="width: 200px;" /></td>
-            </tr>
-
-            <tr>
-                <td><label for="address">Address:</label></td>
-                <td><textarea id="address" name="address" rows="3" required style="width: 200px;"></textarea></td>
-            </tr>
-        </table>
-
-        <h3>Shipping Method</h3>
-        <div th:each="method : ${shippingMethods}">
-            <label>
-                <input type="radio" name="shippingMethod" th:value="${method}" required />
-                <span th:text="${method}"></span>
-            </label><br />
-        </div>
-
-        <button type="submit">Place Order</button>
+        <button type="submit" class="checkout-btn">Proceed to Checkout</button>
     </form>
-
-
 
     <a href="/products">Back to Products</a>
 </body>
