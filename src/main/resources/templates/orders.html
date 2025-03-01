@@ -14,6 +14,9 @@
                 <th>Order ID</th>
                 <th>Total Amount</th>
                 <th>Status</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Address</th>
                 <th>Details</th>
             </tr>
         </thead>
@@ -22,6 +25,9 @@
                 <td th:text="${order.id}"></td>
                 <td th:text="${order.totalAmount}"></td>
                 <td th:text="${order.status}"></td>
+                <td th:text="${order.name ?: 'N/A'}"></td>
+                <td th:text="${order.email ?: 'N/A'}"></td>
+                <td th:text="${order.address ?: 'N/A'}"></td>
                 <td><a th:href="@{/orders/{id}(id=${order.id})}">View</a></td>
             </tr>
         </tbody>

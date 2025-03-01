@@ -78,6 +78,9 @@ public class OrderWebController {
         Order order = new Order();
         order.setStatus(OrderStatus.PENDING);
         order.setShippingMethod(shippingMethod);
+        order.setName(name);
+        order.setEmail(email);
+        order.setAddress(address);
 
         AtomicReference<BigDecimal> totalAmount = new AtomicReference<>(BigDecimal.ZERO);
         Set<OrderItem> items = new HashSet<>();
