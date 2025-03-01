@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.myapp.entity.Order;
 import com.example.myapp.entity.OrderStatus;
@@ -122,6 +123,7 @@ public class PaymentController {
     // callback URL handle callbackParams returned from PayTabs API
     @RequestMapping("/callback")
     @ResponseBody
+    @Transactional
     public String paymentCallback(@RequestBody Map<String, Object> callbackParams) {
         System.out.println("START callback");
         callbackParams.forEach((key, value) -> System.out.println(key + ": " + value));
@@ -196,8 +198,8 @@ public class PaymentController {
         // returnURL and callbackURL don't work with localhost server, need a deployed server
         // body.put("return", "http://localhost:8080/payment/redirect");
         // body.put("callback", "http://localhost:8080/payment/callback");
-        body.put("return", "https://5d43-116-109-30-201.ngrok-free.app/payment/redirect");
-        body.put("callback", "https://5d43-116-109-30-201.ngrok-free.app/payment/callback");
+        body.put("return", "https://c306-116-109-30-201.ngrok-free.app/payment/redirect");
+        body.put("callback", "https://c306-116-109-30-201.ngrok-free.app/payment/callback");
 
         // Set customer details ta avoid re-entering billing details
         JSONObject customerDetails = new JSONObject();
